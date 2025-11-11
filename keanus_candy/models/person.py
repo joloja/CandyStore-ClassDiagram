@@ -11,6 +11,13 @@ class Person:
 
     def display_info(self):
         return f"{self.name} ({self.email})"
+     #Added change
+     def to_dict(self) -> dict:
+        """Return a dictionary representation of the person."""
+        return {
+        "person_id": self.person_id,
+        "name": self.name,
+        "email": self.email
 
 
 class User(Person):
@@ -49,6 +56,16 @@ class User(Person):
     def get_cart(self) -> Optional["ShoppingCart"]:
         """Get the user's shopping cart."""
         return self._cart
+     #added
+        def validate(self) -> bool:
+        """Validate user email and password format."""
+        import re
+        email_valid = re.match(r"[^@]+@[^@]+\.[^@]+", self.email)
+        password_valid = len(self._password) >= 6
+        return bool(email_valid and password_valid)
+ 
+    
+
 
 
 class Staff(User):
@@ -62,7 +79,18 @@ class Staff(User):
         """Update the quantity of a candy in inventory."""
         candy.quantity = new_quantity
 
-    def view_sales_report(self, orders: List["Order"]):
-        """Generate a sales report from a list of orders."""
+    #added
+        def view_sales_report(self, orders: List["Order"]):
+        """Generate a detailed sales report from a list of orders."""
         total = sum(order.total_amount for order in orders)
-        return f"Total sales: ${total:.2f}"
+        count = len(orders)
+        avg = total / count if count else 0
+        return (
+            f"Total sales: ${total:.2f}\n"
+            f"Number of orders: {count}\n"
+            f"Average order value: ${avg:.2f}"
+        )
+
+        
+   
+
